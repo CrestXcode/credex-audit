@@ -21,16 +21,40 @@ function auditTool(
   teamSize: number,
   useCase: string
 ): ToolRecommendation {
-  const pricePerSeat = PRICING[tool]?.[plan] ?? monthlySpend / Math.max(seats, 1)
-  const totalSpend = pricePerSeat * seats
+  const pricePerSeat = PRICING[tool]?.[plan] ?? 0
+  const expectedSpend = pricePerSeat * seats
+  const actualSpend = monthlySpend || expectedSpend
 
   // Default: already optimal
   let recommendation: ToolRecommendation = {
     tool,
-    currentSpend: monthlySpend || totalSpend,
+    currentSpend: actualSpend,
     recommendedAction: 'No change needed',
     monthlySavings: 0,
     reason: 'You are on the right plan for your usage.',
+  }
+
+  // ── Universal: overpaying vs plan price ─────────────────────────────────
+  if (monthlySpend > 0 && expectedSpend > 0 && monthlySpend > expectedSpend * 1.1) {
+    const savings = monthlySpend - expectedSpend
+    return {
+      tool,
+      currentSpend: monthlySpend,
+      recommendedAction: `Review your ${plan} plan billing`,
+      monthlySavings: savings,
+      reason: `You're paying $${monthlySpend}/mo but the ${plan} plan for ${seats} seat(s) should cost $${expectedSpend}/mo. You may have unused seats or be on the wrong plan.`,
+    }
+  }
+
+  // ── Universal: paying for Free plan ─────────────────────────────────────
+  if (plan === 'Free' && monthlySpend > 0) {
+    return {
+      tool,
+      currentSpend: monthlySpend,
+      recommendedAction: 'Check your billing — you should not be paying for Free plan',
+      monthlySavings: monthlySpend,
+      reason: `The Free plan costs $0 but you're reporting $${monthlySpend}/mo. You may be on a paid plan without realising it.`,
+    }
   }
 
   // ── Cursor rules ────────────────────────────────────────────────────────
@@ -38,7 +62,7 @@ function auditTool(
     if (plan === 'Business' && seats <= 3) {
       const savings = (PRICING.cursor.Business - PRICING.cursor.Pro) * seats
       recommendation = {
-        tool, currentSpend: monthlySpend || totalSpend,
+        tool, currentSpend: actualSpend,
         recommendedAction: 'Downgrade to Cursor Pro',
         monthlySavings: savings,
         reason: `Business plan is designed for larger teams. With ${seats} seat(s), Pro at $20/user saves $${savings}/mo with no meaningful feature loss for small teams.`,
@@ -46,8 +70,8 @@ function auditTool(
     }
     if (plan === 'Pro' && useCase === 'writing') {
       recommendation = {
-        tool, currentSpend: monthlySpend || totalSpend,
-        recommendedAction: 'Switch to Claude Pro or ChatGPT Plus',
+        tool, currentSpend: actualSpend,
+        recommendedAction: 'Switch to Claude Pro for writing',
         alternativeTool: 'claude',
         alternativePlan: 'Pro',
         monthlySavings: (20 - 17) * seats,
@@ -61,20 +85,10 @@ function auditTool(
     if (plan === 'Pro+' && useCase !== 'coding') {
       const savings = (PRICING['github-copilot']['Pro+'] - PRICING['github-copilot'].Pro) * seats
       recommendation = {
-        tool, currentSpend: monthlySpend || totalSpend,
+        tool, currentSpend: actualSpend,
         recommendedAction: 'Downgrade to GitHub Copilot Pro',
         monthlySavings: savings,
-        reason: `Pro+ at $39/user is justified only for heavy coding workflows needing GPT-4o and Claude Sonnet access. For non-coding use cases, Pro at $10/user covers all core features.`,
-      }
-    }
-    if (plan === 'Pro+' && seats >= 5) {
-      recommendation = {
-        tool, currentSpend: monthlySpend || totalSpend,
-        recommendedAction: 'Evaluate Cursor Business instead',
-        alternativeTool: 'cursor',
-        alternativePlan: 'Business',
-        monthlySavings: (PRICING['github-copilot']['Pro+'] - PRICING.cursor.Business) * seats,
-        reason: `At ${seats} seats, Cursor Business at $40/user offers deeper IDE integration and better autocomplete than Copilot Pro+ at $39/user, with similar cost but higher productivity ROI for coding teams.`,
+        reason: `Pro+ at $39/user is justified only for heavy coding workflows. For non-coding use cases, Pro at $10/user covers all core features.`,
       }
     }
   }
@@ -84,19 +98,18 @@ function auditTool(
     if (plan === 'Max' && seats >= 3) {
       const savings = (PRICING.claude.Max - PRICING.claude.Team) * seats
       recommendation = {
-        tool, currentSpend: monthlySpend || totalSpend,
+        tool, currentSpend: actualSpend,
         recommendedAction: 'Switch to Claude Team plan',
         monthlySavings: savings,
         reason: `Claude Max at $100/user is for power users needing 5x usage limits. For teams of ${seats}+, Team at $20/user provides higher limits than Pro with centralised billing, saving $${savings}/mo.`,
       }
     }
     if (plan === 'Pro' && seats >= 5) {
-      const savings = (PRICING.claude.Pro - PRICING.claude.Team) * seats
       recommendation = {
-        tool, currentSpend: monthlySpend || totalSpend,
+        tool, currentSpend: actualSpend,
         recommendedAction: 'Switch to Claude Team plan',
-        monthlySavings: Math.max(savings, 0),
-        reason: `With ${seats} seats, Claude Team at $20/user gives you higher usage limits, admin controls, and priority access — better value than individual Pro plans at scale.`,
+        monthlySavings: (PRICING.claude.Pro - PRICING.claude.Team) * seats,
+        reason: `With ${seats} seats, Claude Team at $20/user gives higher usage limits and admin controls — better value than individual Pro plans at scale.`,
       }
     }
   }
@@ -106,33 +119,24 @@ function auditTool(
     if (plan === 'Pro' && useCase !== 'research') {
       const savings = (PRICING.chatgpt.Pro - PRICING.chatgpt.Team) * seats
       recommendation = {
-        tool, currentSpend: monthlySpend || totalSpend,
+        tool, currentSpend: actualSpend,
         recommendedAction: 'Downgrade to ChatGPT Team',
         monthlySavings: savings,
-        reason: `ChatGPT Pro at $200/user includes unlimited o1 access, mainly valuable for deep research workflows. For ${useCase} use cases, Team at $25/user covers GPT-4o with no meaningful loss.`,
-      }
-    }
-    if (plan === 'Plus' && seats >= 3) {
-      const savings = (PRICING.chatgpt.Team - PRICING.chatgpt.Plus) * seats
-      recommendation = {
-        tool, currentSpend: monthlySpend || totalSpend,
-        recommendedAction: 'Upgrade to ChatGPT Team',
-        monthlySavings: -savings, // costs more but worth it
-        reason: `With ${seats} seats on Plus, Team plan adds admin controls, no data training, and higher limits. The $5/user premium is worth it for business use.`,
+        reason: `ChatGPT Pro at $200/user includes unlimited o1 access, mainly valuable for deep research. For ${useCase} use cases, Team at $25/user covers GPT-4o with no meaningful loss.`,
       }
     }
   }
 
   // ── Gemini rules ────────────────────────────────────────────────────────
   if (tool === 'gemini') {
-    if (plan === 'Pro' && (useCase === 'coding')) {
+    if (plan === 'Pro' && useCase === 'coding') {
       recommendation = {
-        tool, currentSpend: monthlySpend || totalSpend,
+        tool, currentSpend: actualSpend,
         recommendedAction: 'Switch to Cursor Pro for coding',
         alternativeTool: 'cursor',
         alternativePlan: 'Pro',
         monthlySavings: (PRICING.gemini.Pro - PRICING.cursor.Pro) * seats,
-        reason: `Gemini Pro at $19.99/user is a general AI assistant. For coding specifically, Cursor Pro at $20/user provides IDE-native autocomplete, chat, and agent mode — far superior for engineering workflows.`,
+        reason: `Gemini Pro at $19.99/user is a general assistant. For coding, Cursor Pro at $20/user provides IDE-native autocomplete and agent mode — far superior for engineering workflows.`,
       }
     }
   }
@@ -142,7 +146,7 @@ function auditTool(
     if (plan === 'Max' && seats >= 2) {
       const savings = (PRICING.windsurf.Max - PRICING.windsurf.Teams) * seats
       recommendation = {
-        tool, currentSpend: monthlySpend || totalSpend,
+        tool, currentSpend: actualSpend,
         recommendedAction: 'Switch to Windsurf Teams',
         monthlySavings: savings,
         reason: `Windsurf Max at $200/user is for individual power users. Teams plan at $40/user includes collaboration features and is far more cost-effective at ${seats}+ seats.`,
