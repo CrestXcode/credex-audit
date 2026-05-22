@@ -13,3 +13,10 @@
 **What I learned:** Pricing varies significantly by region (INR vs USD) — standardized to USD for global consistency. Audit logic needs to be defensible — every recommendation needs a number-backed reason, not just a gut feeling.
 **Blockers / what I'm stuck on:** Jest needed ts-node to parse TypeScript config — fixed by installing ts-node separately.
 **Plan for tomorrow:** Build the audit results page UI. Connect the form to the engine and show recommendations on screen.
+
+## Day 3 — 2026-05-22
+**Hours worked:** 3
+**What I did:** Fixed critical bug — plan names in plans.ts didn't match audit engine causing all rules to silently fail. Added universal overpaying detection rule and free-plan billing check to engine. All 7 tests still passing. Built and connected results page — form now navigates to results on submit. Fixed audit engine to use actual spend vs expected spend comparison.
+**What I learned:** Data consistency between files matters — a mismatch in plan name strings caused silent failures that were hard to spot. Always test with real inputs, not just unit tests.
+**Blockers / what I'm stuck on:** Audit engine rules only cover explicit plan mismatches — edge cases like API overspend still need work.
+**Plan for tomorrow:** Add Supabase lead capture, email confirmation via Resend, and shareable URL with OG tags.
