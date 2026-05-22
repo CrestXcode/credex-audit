@@ -106,7 +106,7 @@ export default function AuditForm() {
               <label className="text-gray-400 text-xs mb-1 block">Monthly Spend ($)</label>
               <input
                 type="number"
-                value={entry.monthlySpend}
+                value={entry.monthlySpend || ''}
                 onChange={e => updateTool(index, 'monthlySpend', parseFloat(e.target.value) || 0)}
                 className="w-full bg-gray-700 text-white rounded px-3 py-2 text-sm border border-gray-600"
                 min={0}
@@ -116,7 +116,7 @@ export default function AuditForm() {
               <label className="text-gray-400 text-xs mb-1 block">Seats</label>
               <input
                 type="number"
-                value={entry.seats}
+                value={entry.seats || ''}
                 onChange={e => updateTool(index, 'seats', parseInt(e.target.value) || 1)}
                 className="w-full bg-gray-700 text-white rounded px-3 py-2 text-sm border border-gray-600"
                 min={1}
