@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { AuditFormData, ToolEntry, ToolName, UseCase } from '@/types/audit'
 import { TOOL_PLANS, TOOL_LABELS } from '@/data/plans'
 
@@ -13,16 +14,15 @@ const DEFAULT_FORM: AuditFormData = {
 }
 
 export default function AuditForm() {
+  const router = useRouter()
   const [form, setForm] = useState<AuditFormData>(DEFAULT_FORM)
   const [selectedTool, setSelectedTool] = useState<ToolName>('cursor')
 
-  // Load from localStorage on mount
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY)
     if (saved) setForm(JSON.parse(saved))
   }, [])
 
-  // Save to localStorage on every change
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(form))
   }, [form])
@@ -48,6 +48,10 @@ export default function AuditForm() {
 
   const removeTool = (index: number) => {
     setForm(prev => ({ ...prev, tools: prev.tools.filter((_, i) => i !== index) }))
+  }
+
+  const handleSubmit = () => {
+    router.push('/results')
   }
 
   return (
@@ -157,7 +161,10 @@ export default function AuditForm() {
 
       {/* Submit */}
       {form.tools.length > 0 && (
-        <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold text-lg">
+        <button
+          onClick={handleSubmit}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold text-lg"
+        >
           Run My Audit →
         </button>
       )}
