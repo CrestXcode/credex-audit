@@ -5,12 +5,14 @@ import { useRouter } from 'next/navigation'
 import { AuditFormData, AuditResult } from '@/types/audit'
 import { runAudit } from '@/lib/auditEngine'
 import { TOOL_LABELS } from '@/data/plans'
+import LeadCapture from '@/components/LeadCapture'
 
 const STORAGE_KEY = 'credex-audit-form'
 
 export default function ResultsPage() {
   const router = useRouter()
   const [result, setResult] = useState<AuditResult | null>(null)
+  const [emailCaptured, setEmailCaptured] = useState(false)
 
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY)
@@ -36,7 +38,7 @@ export default function ResultsPage() {
         <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-8 mb-8 text-center">
           {isOptimal ? (
             <>
-              <div className="text-5xl mb-3">✅</div>
+              <div className="text-lg font-semibold text-blue-100 mb-3 uppercase tracking-wide">Optimal</div>
               <h1 className="text-2xl font-bold text-white mb-2">You're spending well!</h1>
               <p className="text-blue-200">Your current AI stack looks optimised. No major savings found.</p>
             </>
@@ -78,6 +80,15 @@ export default function ResultsPage() {
           ))}
         </div>
 
+        {/* Lead Capture — shown before Credex CTA */}
+        {!emailCaptured ? (
+          <LeadCapture result={result} onSuccess={() => setEmailCaptured(true)} />
+        ) : (
+          <div className="bg-green-500/20 border border-green-500/30 rounded-2xl p-4 mb-8 text-center">
+            <p className="text-green-400 font-medium">Report saved! We'll be in touch.</p>
+          </div>
+        )}
+
         {/* Credex CTA for high savings */}
         {isHighSavings && (
           <div className="bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-2xl p-6 mb-8 text-center">
@@ -85,7 +96,7 @@ export default function ResultsPage() {
               💰 You could save ${result.totalMonthlySavings.toFixed(0)}/mo
             </h3>
             <p className="text-gray-300 mb-4">
-              Credex sources discounted AI credits from companies that overforecast. 
+              Credex sources discounted AI credits from companies that overforecast.
               Book a free consultation to capture even more savings.
             </p>
             <a
@@ -100,14 +111,11 @@ export default function ResultsPage() {
         )}
 
         {/* Optimal CTA */}
-        {isOptimal && (
+        {isOptimal && emailCaptured && (
           <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 mb-8 text-center">
-            <p className="text-gray-300 mb-4">
-              Want to know when new optimisations apply to your stack?
+            <p className="text-gray-300">
+              We'll notify you when new optimisations apply to your stack. 
             </p>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-xl">
-              Notify Me of New Savings →
-            </button>
           </div>
         )}
 
