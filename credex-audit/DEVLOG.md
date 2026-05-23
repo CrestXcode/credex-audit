@@ -20,3 +20,10 @@
 **What I learned:** Data consistency between files matters — a mismatch in plan name strings caused silent failures that were hard to spot. Always test with real inputs, not just unit tests.
 **Blockers / what I'm stuck on:** Audit engine rules only cover explicit plan mismatches — edge cases like API overspend still need work.
 **Plan for tomorrow:** Add Supabase lead capture, email confirmation via Resend, and shareable URL with OG tags.
+
+## Day 4 — 2026-05-23
+**Hours worked:** 3
+**What I did:** Set up Supabase database with leads table and RLS policies. Built LeadCapture component with honeypot spam protection. Connected results page to lead capture flow — email shown after audit results, never before. Fixed supabase dependency missing from package.json. Added Supabase env variables to Vercel. Tested end-to-end — leads appearing in Supabase dashboard.
+**What I learned:** npm install doesn't always save to package.json automatically — always verify with cat package.json. Vercel can have multiple projects connected to same repo which caused env variable confusion.
+**Blockers / what I'm stuck on:** Two Vercel projects connected to same repo caused deployment confusion — resolved by adding env vars to correct project.
+**Plan for tomorrow:** Exam eve — light work. Maybe shareable URL or small UI improvements. Full sprint on 26th post exam.
