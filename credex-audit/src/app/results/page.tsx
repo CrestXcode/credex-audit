@@ -141,7 +141,7 @@ export default function ResultsPage() {
               rel="noopener noreferrer"
               className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-8 py-3 rounded-xl inline-block"
             >
-              Book Free Credex Consultation →
+              Book Free Credex Consultation &rarr;
             </a>
           </div>
         )}
