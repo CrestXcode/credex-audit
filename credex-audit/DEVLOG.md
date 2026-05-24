@@ -27,3 +27,10 @@
 **What I learned:** npm install doesn't always save to package.json automatically — always verify with cat package.json. Vercel can have multiple projects connected to same repo which caused env variable confusion.
 **Blockers / what I'm stuck on:** Two Vercel projects connected to same repo caused deployment confusion — resolved by adding env vars to correct project.
 **Plan for tomorrow:** Exam eve — light work. Maybe shareable URL or small UI improvements. Full sprint on 26th post exam.
+
+## Day 5 — 2026-05-24
+**Hours worked:** 1.5
+**What I did:** Added Anthropic API summary endpoint with graceful fallback. Connected summary to results page with loading skeleton. Fixed build failure caused by missing anchor tag and corrupted arrow character in Credex CTA block. Results page now showing savings hero, AI analysis, per-tool breakdown all working end-to-end.
+**What I learned:** Special characters like arrows can corrupt JSX builds — safer to use text or HTML entities. Always check build logs carefully.
+**Blockers / what I'm stuck on:** Anthropic API summary showing fallback text — may need API key to fully activate.
+**Plan for tomorrow:** Exam day — tiny commit only to keep streak.
