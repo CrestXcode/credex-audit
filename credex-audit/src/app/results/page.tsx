@@ -129,13 +129,13 @@ export default function ResultsPage() {
         {isHighSavings && (
           <div className="bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-2xl p-6 mb-8 text-center">
             <h3 className="text-yellow-400 font-bold text-xl mb-2">
-              💰 You could save ${result.totalMonthlySavings.toFixed(0)}/mo
+               You could save ${result.totalMonthlySavings.toFixed(0)}/mo
             </h3>
             <p className="text-gray-300 mb-4">
               Credex sources discounted AI credits from companies that overforecast.
               Book a free consultation to capture even more savings.
             </p>
-            
+            <a
               href="https://credex.rocks"
               target="_blank"
               rel="noopener noreferrer"
