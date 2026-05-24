@@ -13,12 +13,32 @@ export default function ResultsPage() {
   const router = useRouter()
   const [result, setResult] = useState<AuditResult | null>(null)
   const [emailCaptured, setEmailCaptured] = useState(false)
+  const [summary, setSummary] = useState<string>('')
+  const [summaryLoading, setSummaryLoading] = useState(true)
 
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY)
     if (!saved) { router.push('/'); return }
     const form: AuditFormData = JSON.parse(saved)
-    setResult(runAudit(form))
+    const auditResult = runAudit(form)
+    setResult(auditResult)
+
+    // Fetch AI summary
+    fetch('/api/summary', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tools: form.tools,
+        totalMonthlySavings: auditResult.totalMonthlySavings,
+        totalAnnualSavings: auditResult.totalAnnualSavings,
+        useCase: form.useCase,
+        teamSize: form.teamSize,
+      }),
+    })
+      .then(res => res.json())
+      .then(data => setSummary(data.summary))
+      .catch(() => setSummary('Your AI stack has been analysed. Review the recommendations below to capture your potential savings.'))
+      .finally(() => setSummaryLoading(false))
   }, [router])
 
   if (!result) return (
@@ -55,6 +75,22 @@ export default function ResultsPage() {
           )}
         </div>
 
+        {/* AI Summary */}
+        <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 mb-8">
+          <h2 className="text-white font-semibold mb-3 flex items-center gap-2">
+            <span>✦</span> AI Analysis
+          </h2>
+          {summaryLoading ? (
+            <div className="animate-pulse space-y-2">
+              <div className="h-4 bg-gray-700 rounded w-full"></div>
+              <div className="h-4 bg-gray-700 rounded w-5/6"></div>
+              <div className="h-4 bg-gray-700 rounded w-4/6"></div>
+            </div>
+          ) : (
+            <p className="text-gray-300 leading-relaxed">{summary}</p>
+          )}
+        </div>
+
         {/* Per Tool Recommendations */}
         <h2 className="text-white font-semibold text-xl mb-4">Per Tool Breakdown</h2>
         <div className="space-y-4 mb-8">
@@ -80,12 +116,12 @@ export default function ResultsPage() {
           ))}
         </div>
 
-        {/* Lead Capture — shown before Credex CTA */}
+        {/* Lead Capture */}
         {!emailCaptured ? (
           <LeadCapture result={result} onSuccess={() => setEmailCaptured(true)} />
         ) : (
           <div className="bg-green-500/20 border border-green-500/30 rounded-2xl p-4 mb-8 text-center">
-            <p className="text-green-400 font-medium">Report saved! We'll be in touch.</p>
+            <p className="text-green-400 font-medium">✅ Report saved! We'll be in touch.</p>
           </div>
         )}
 
@@ -99,7 +135,7 @@ export default function ResultsPage() {
               Credex sources discounted AI credits from companies that overforecast.
               Book a free consultation to capture even more savings.
             </p>
-            <a
+            
               href="https://credex.rocks"
               target="_blank"
               rel="noopener noreferrer"
@@ -114,7 +150,7 @@ export default function ResultsPage() {
         {isOptimal && emailCaptured && (
           <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 mb-8 text-center">
             <p className="text-gray-300">
-              We'll notify you when new optimisations apply to your stack. 
+              We'll notify you when new optimisations apply to your stack. 🔔
             </p>
           </div>
         )}
