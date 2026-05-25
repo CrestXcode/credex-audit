@@ -105,8 +105,8 @@ export default async function SharedAuditPage({ params }: Props) {
           </h3>
           <p className="text-gray-400 mb-4">
             Get your own free audit in 2 minutes.
-          </p>
-          
+         </p>
+           <a
             href="https://credix-audit.vercel.app"
             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-xl inline-block"
           >
