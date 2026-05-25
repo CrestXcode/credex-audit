@@ -7,22 +7,26 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
-export async function generateMetadata({ params }: { params: { id: string } }) {
+type Props = {
+  params: Promise<{ id: string }>
+}
+
+export async function generateMetadata({ params }: Props) {
+  const { id } = await params
   const { data } = await supabase
     .from('audits')
     .select('total_monthly_savings, total_annual_savings')
-    .eq('id', params.id)
+    .eq('id', id)
     .single()
 
   if (!data) return { title: 'AI Spend Audit' }
 
   return {
     title: `Save $${data.total_monthly_savings}/mo on AI tools`,
-    description: `This team could save $${data.total_annual_savings}/year by optimising their AI stack. See your own audit free.`,
+    description: `This team could save $${data.total_annual_savings}/year by optimising their AI stack.`,
     openGraph: {
       title: `Save $${data.total_monthly_savings}/mo on AI tools`,
-      description: `This team could save $${data.total_annual_savings}/year by optimising their AI stack. See your own audit free.`,
-      url: `https://credix-audit.vercel.app/audit/${params.id}`,
+      description: `This team could save $${data.total_annual_savings}/year by optimising their AI stack.`,
     },
     twitter: {
       card: 'summary_large_image',
@@ -32,11 +36,12 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
   }
 }
 
-export default async function SharedAuditPage({ params }: { params: { id: string } }) {
+export default async function SharedAuditPage({ params }: Props) {
+  const { id } = await params
   const { data, error } = await supabase
     .from('audits')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', id)
     .single()
 
   if (error || !data) notFound()
@@ -52,25 +57,22 @@ export default async function SharedAuditPage({ params }: { params: { id: string
     <main className="min-h-screen bg-gray-900 py-12 px-4">
       <div className="max-w-2xl mx-auto">
 
-        {/* Shared badge */}
         <div className="text-center mb-6">
           <span className="bg-blue-500/20 text-blue-400 text-sm px-4 py-2 rounded-full">
             Shared Audit Report
           </span>
         </div>
 
-        {/* Hero */}
         <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-8 mb-8 text-center">
           <p className="text-blue-200 mb-2">Potential Monthly Savings</p>
           <h1 className="text-6xl font-bold text-white mb-2">
             ${data.total_monthly_savings}
           </h1>
           <p className="text-blue-200 text-lg">
-            ${data.total_annual_savings}/year — just by optimising their AI stack
+            ${data.total_annual_savings}/year just by optimising their AI stack
           </p>
         </div>
 
-        {/* Per Tool */}
         <h2 className="text-white font-semibold text-xl mb-4">Per Tool Breakdown</h2>
         <div className="space-y-4 mb-8">
           {recommendations.map((rec, i) => (
@@ -97,7 +99,6 @@ export default async function SharedAuditPage({ params }: { params: { id: string
           ))}
         </div>
 
-        {/* CTA */}
         <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 text-center">
           <h3 className="text-white font-bold text-lg mb-2">
             What does your AI stack cost?
@@ -105,7 +106,7 @@ export default async function SharedAuditPage({ params }: { params: { id: string
           <p className="text-gray-400 mb-4">
             Get your own free audit in 2 minutes.
           </p>
-          <a
+          
             href="https://credix-audit.vercel.app"
             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-xl inline-block"
           >
