@@ -185,7 +185,7 @@ export default function ResultsPage() {
               Credex sources discounted AI credits from companies that overforecast.
               Book a free consultation to capture even more savings.
             </p>
-            
+            <a
               href="https://credex.rocks"
               target="_blank"
               rel="noopener noreferrer"
