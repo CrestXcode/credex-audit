@@ -34,3 +34,10 @@
 **What I learned:** Special characters like arrows can corrupt JSX builds — safer to use text or HTML entities. Always check build logs carefully.
 **Blockers / what I'm stuck on:** Anthropic API summary showing fallback text — may need API key to fully activate.
 **Plan for tomorrow:** Exam day — tiny commit only to keep streak.
+
+## Day 6 — 2026-05-25
+**Hours worked:** 3
+**What I did:** Gave DMDW exam (went well!). Added shareable audit URL feature — each audit saved to Supabase with unique ID. Built shared audit page at /audit/[id] with OG tags for Twitter/social previews. Added Anthropic API key to Vercel. Fixed Next.js 15 params async compatibility issue. Fought recurring anchor tag corruption bug from heredoc commands.
+**What I learned:** Next.js 15 requires params to be awaited in dynamic routes. heredoc cat commands strip angle brackets from JSX — always use VS Code for files with HTML tags.
+**Blockers / what I'm stuck on:** Anchor tag kept getting stripped by terminal heredoc — fixed by editing in VS Code directly.
+**Plan for tomorrow:** Write all markdown files (README, ARCHITECTURE, GTM, ECONOMICS, REFLECTION, USER_INTERVIEWS, LANDING_COPY, METRICS, PROMPTS, TESTS). Final polish and submit before 5:28pm.
