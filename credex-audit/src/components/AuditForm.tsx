@@ -80,7 +80,10 @@ export default function AuditForm() {
 
       {/* Tool List */}
       {form.tools.length === 0 && (
-        <p className="text-gray-500 text-center py-8">Add your first AI tool above ↑</p>
+        <div className="text-center py-8">
+          <p className="text-gray-500">Add your first AI tool above ↑</p>
+          <p className="text-gray-600 text-sm mt-2">Don't see your tool? We're adding more soon.</p>
+        </div>
       )}
 
       {form.tools.map((entry, index) => (
