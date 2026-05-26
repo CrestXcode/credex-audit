@@ -4,15 +4,15 @@
 
 ```mermaid
 graph TD
-    A[User visits credix-audit.vercel.app] --> B[Spend Input Form]
+    A[User visits site] --> B[Spend Input Form]
     B --> C[localStorage persistence]
     B --> D[Run My Audit button]
     D --> E[auditEngine.ts]
     E --> F[Results Page]
-    F --> G[/api/summary - Anthropic API]
-    F --> H[/api/audit - Save to Supabase]
+    F --> G[API: summary - Anthropic]
+    F --> H[API: audit - Supabase]
     G --> F
-    H --> I[Unique Share URL /audit/id]
+    H --> I[Unique Share URL]
     F --> J[LeadCapture Component]
     J --> K[Supabase leads table]
     I --> L[Shared Audit Page]
@@ -25,10 +25,10 @@ graph TD
 3. On submit, form data passed to `runAudit()` in `auditEngine.ts`
 4. Audit engine runs hardcoded rules against pricing data — returns recommendations and savings
 5. Results page renders recommendations and simultaneously:
-   - Calls `/api/summary` → Anthropic API generates personalised 100-word summary
-   - Calls `/api/audit` → saves audit to Supabase, returns unique ID for share URL
-6. Lead capture form saves email + optional fields to Supabase `leads` table
-7. Shared audit page at `/audit/[id]` fetches from Supabase — strips personal info
+   - Calls summary API — Anthropic generates personalised 100-word summary
+   - Calls audit API — saves audit to Supabase, returns unique ID for share URL
+6. Lead capture form saves email and optional fields to Supabase leads table
+7. Shared audit page fetches from Supabase by ID — personal info not included
 
 ## Stack
 
@@ -42,8 +42,8 @@ graph TD
 
 ## What I'd Change for 10k Audits/Day
 
-1. **Rate limiting** — Add Redis-based rate limiting on `/api/summary` and `/api/audit` to prevent abuse
+1. **Rate limiting** — Add Redis-based rate limiting on summary and audit APIs to prevent abuse
 2. **Caching** — Cache Anthropic API responses for identical inputs to reduce costs
 3. **Queue** — Move Anthropic API calls to a background job queue so results page loads instantly
-4. **CDN** — Serve shared audit pages from edge cache since they're read-heavy and rarely update
-5. **Pricing data** — Move from hardcoded rules to a database-driven pricing table so updates don't require deploys
+4. **CDN** — Serve shared audit pages from edge cache since they are read-heavy and rarely update
+5. **Pricing data** — Move from hardcoded rules to a database-driven pricing table so updates do not require deploys
