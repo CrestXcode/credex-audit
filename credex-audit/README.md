@@ -26,9 +26,11 @@ npm run dev
 ```
 
 ## Environment Variables
-```NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+```
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-ANTHROPIC_API_KEY=your_anthropic_key_here```
+ANTHROPIC_API_KEY=your_anthropic_key_here
+```
 
 ---
 
