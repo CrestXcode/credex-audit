@@ -4,7 +4,7 @@ A free web app that audits your team's AI tool spending and surfaces where you'r
 
 **Who it's for:** Startup founders and engineering managers paying for AI tools like Cursor, Claude, ChatGPT, and GitHub Copilot who want to know if they're on the right plans.
 
-**Live URL:** https://credix-audit.vercel.app
+**Live URL:** https://credex-audit-liart.vercel.app
 
 ---
 
