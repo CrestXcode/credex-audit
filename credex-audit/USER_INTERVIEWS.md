@@ -4,7 +4,7 @@ Three conversations conducted between May 21-25, 2026 to validate the product co
 
 ---
 
-## Interview 1 — S.K., Student, Personal Projects
+## Interview 1 — I.S., Student, Personal Projects
 
 **Format:** WhatsApp call, ~15 minutes
 **Profile:** CS student, uses AI tools for personal projects, no paid subscriptions
@@ -26,7 +26,7 @@ Tools currently used: Claude, ChatGPT, KiloAI, Blackbox — all free tiers.
 
 ---
 
-## Interview 2 — R.M., Indie Hacker, Solo Builder
+## Interview 2 — S.D., Indie Hacker, Solo Builder
 
 **Format:** LinkedIn DM conversation, ~20 minutes async
 **Profile:** Solo builder working on side projects, uses AI tools daily
@@ -48,7 +48,7 @@ Tools currently used: ChatGPT and Claude, both free tiers.
 
 ---
 
-## Interview 3 — A.P., Indie Hacker, Solo Builder
+## Interview 3 — D.C., Indie Hacker, Solo Builder
 
 **Format:** LinkedIn DM conversation, ~10 minutes async
 **Profile:** Solo builder, uses free AI tools, cost-conscious
