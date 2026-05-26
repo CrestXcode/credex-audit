@@ -41,3 +41,10 @@
 **What I learned:** Next.js 15 requires params to be awaited in dynamic routes. heredoc cat commands strip angle brackets from JSX — always use VS Code for files with HTML tags.
 **Blockers / what I'm stuck on:** Anchor tag kept getting stripped by terminal heredoc — fixed by editing in VS Code directly.
 **Plan for tomorrow:** Write all markdown files (README, ARCHITECTURE, GTM, ECONOMICS, REFLECTION, USER_INTERVIEWS, LANDING_COPY, METRICS, PROMPTS, TESTS). Final polish and submit before 5:28pm.
+
+## Day 7 — 2026-05-26
+**Hours worked:** 3
+**What I did:** Wrote markdown files (README, ARCHITECTURE, GTM, ECONOMICS, USER_INTERVIEWS, LANDING_COPY, PROMPTS, TESTS). Also fixed the root directory issue on Vercel which gave the 404 error for each and every deployment. Also fixed the shareable link error which had the dead link. Tried to polish everything and submit it by today but only some part is left such as REFLECTION file and some minor polishing.
+**What I learned:** Awareness is a must as my root directory was wrong and the code was breaking on Vercel. I chose wrong directory so I can stop making silly mistakes. Everything was fine else.
+**Blockers / what I'm stuck on:** Code was just breaking on Vercel everytime after each and every deployment and all the links were updated fine after.
+**Plan for tomorrow:** Write the left markdown files and final polsihing and submit before 5:28pm.
