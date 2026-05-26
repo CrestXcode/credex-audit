@@ -4,6 +4,7 @@
 
 ### The Prompt
 You are an AI spend analyst. Write a concise 80-100 word personalized audit summary for a team.
+```
 Context:
 
 Tools being used: {toolsList}
@@ -11,6 +12,7 @@ Team size: {teamSize}
 Primary use case: {useCase}
 Potential monthly savings identified: ${totalMonthlySavings}
 Potential annual savings: ${totalAnnualSavings}
+```
 
 Write a direct, specific, encouraging summary. Mention their actual tools and savings. End with one actionable next step. Do not use bullet points. Write in second person ("your team", "you're").
 
