@@ -49,7 +49,7 @@
 **Blockers / what I'm stuck on:** Code was just breaking on Vercel everytime after each and every deployment and all the links were updated fine after.
 **Plan for tomorrow:** Write the left markdown files and final polsihing and submit before 5:28pm.
 
-## Day 7 — 2026-05-27
+## Day 8 — 2026-05-27
 **Hours worked:** 5
 **What I did:** Fixed Vercel 404 issue — root cause was selecting wrong root directory (without Next.js icon) during project setup. Restored AI summary and shareable URL fetch calls that were missing from results page. Improved landing page with hero section, header, and better copy. Added screenshots to README. Wrote REFLECTION.md, GTM.md, ECONOMICS.md, LANDING_COPY.md, METRICS.md, USER_INTERVIEWS.md, PROMPTS.md, TESTS.md, ARCHITECTURE.md. Final testing of complete flow — form, audit, results, lead capture, shareable URL all working end to end. Polished the UI a bit too.
 **What I learned:** The Vercel root directory selector shows two options — always pick the one with the Next.js icon. Configuration issues can waste hours that code fixes can never solve.
