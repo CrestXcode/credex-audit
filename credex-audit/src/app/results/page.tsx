@@ -13,6 +13,8 @@ export default function ResultsPage() {
   const router = useRouter()
   const [result, setResult] = useState<AuditResult | null>(null)
   const [emailCaptured, setEmailCaptured] = useState(false)
+  const [summary, setSummary] = useState('')
+  const [summaryLoading, setSummaryLoading] = useState(false)
 
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY)
@@ -54,7 +56,19 @@ export default function ResultsPage() {
             </>
           )}
         </div>
-
+            {/* AI Summary */}
+        <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 mb-8">
+          <h2 className="text-white font-semibold mb-3">AI Analysis</h2>
+          {summaryLoading ? (
+          <div className="animate-pulse space-y-2">
+      <div className="h-4 bg-gray-700 rounded w-full"></div>
+      <div className="h-4 bg-gray-700 rounded w-5/6"></div>
+      <div className="h-4 bg-gray-700 rounded w-4/6"></div>
+    </div>
+  ) : (
+    <p className="text-gray-300 leading-relaxed">{summary}</p>
+  )}
+</div>
         {/* Per Tool Recommendations */}
         <h2 className="text-white font-semibold text-xl mb-4">Per Tool Breakdown</h2>
         <div className="space-y-4 mb-8">
