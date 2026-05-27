@@ -64,7 +64,7 @@ Committed every single day including exam day. Managed a DMDW university exam on
 TypeScript used throughout, sensible abstractions, audit engine is cleanly separated from UI. Lost points because the codebase has some rough edges from late-night debugging sessions and the heredoc anchor tag issue created messy commit history.
 
 **Design sense: 6/10**
-Dark theme is clean and consistent. Results page looks like a real product. But I didn't get to the UI polish I planned — typography hierarchy could be stronger and the form could be more guided. Functional but not beautiful.
+Added a proper hero section and header on the final day. Dark theme is clean and consistent. Results page looks like a real product. Could be stronger with better typography hierarchy but functional and polished enough to ship.
 
 **Problem-solving: 7/10**
 Solved every blocker except spent too long on the Vercel 404 before realising it was a configuration issue. Better systematic debugging from the start would have saved 3-4 hours.
