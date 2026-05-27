@@ -10,8 +10,9 @@ A free web app that audits your team's AI tool spending and surfaces where you'r
 
 ## Screenshots
 
-> Add 3 screenshots here before submission
-
+![Form Page](screenshot1.png)
+![Results Page](screenshot2.png)
+![Shared Audit Page](screenshot3.png)
 ---
 
 ## Quick Start
