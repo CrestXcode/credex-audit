@@ -15,22 +15,68 @@ export default function ResultsPage() {
   const [emailCaptured, setEmailCaptured] = useState(false)
   const [summary, setSummary] = useState('')
   const [summaryLoading, setSummaryLoading] = useState(false)
+  const [shareUrl, setShareUrl] = useState('')
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY)
-    if (!saved) { router.push('/'); return }
-    const form: AuditFormData = JSON.parse(saved)
-    setResult(runAudit(form))
-  }, [router])
+  const saved = localStorage.getItem(STORAGE_KEY)
+  if (!saved) { router.push('/'); return }
+  const form: AuditFormData = JSON.parse(saved)
+  const auditResult = runAudit(form)
+  setResult(auditResult)
 
-  if (!result) return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-      <p className="text-white text-xl">Calculating your audit...</p>
-    </div>
-  )
+  // Fetch AI summary
+  setSummaryLoading(true)
+  fetch('/api/summary', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      tools: form.tools,
+      totalMonthlySavings: auditResult.totalMonthlySavings,
+      totalAnnualSavings: auditResult.totalAnnualSavings,
+      useCase: form.useCase,
+      teamSize: form.teamSize,
+    }),
+  })
+    .then(res => res.json())
+    .then(data => setSummary(data.summary))
+    .catch(() => setSummary('Your AI stack has been analysed. Review the recommendations below to capture your potential savings.'))
+    .finally(() => setSummaryLoading(false))
+
+  // Save audit and get shareable URL
+  fetch('/api/audit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      tools: form.tools,
+      teamSize: form.teamSize,
+      useCase: form.useCase,
+      totalMonthlySavings: auditResult.totalMonthlySavings,
+      totalAnnualSavings: auditResult.totalAnnualSavings,
+      recommendations: auditResult.recommendations,
+    }),
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.id) setShareUrl(`${window.location.origin}/audit/${data.id}`)
+    })
+    .catch(err => console.error('Failed to save audit:', err))
+}, [router])
+
+if (!result) return (
+  <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+    <p className="text-white text-xl">Calculating your audit...</p>
+  </div>
+)
 
   const isHighSavings = result.totalMonthlySavings > 500
   const isOptimal = result.totalMonthlySavings === 0
+
+  const handleCopy = () => {
+  navigator.clipboard.writeText(shareUrl)
+  setCopied(true)
+  setTimeout(() => setCopied(false), 2000)
+}
 
   return (
     <main className="min-h-screen bg-gray-900 py-12 px-4">
@@ -69,6 +115,29 @@ export default function ResultsPage() {
     <p className="text-gray-300 leading-relaxed">{summary}</p>
   )}
 </div>
+
+{/* Shareable URL */}
+{shareUrl && (
+  <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 mb-8">
+    <h3 className="text-white font-semibold mb-2">Share your audit</h3>
+    <p className="text-gray-400 text-sm mb-3">
+      Your personal details are not included in the shared link.
+    </p>
+    <div className="flex gap-2">
+      <input
+        readOnly
+        value={shareUrl}
+        className="flex-1 bg-gray-700 text-gray-300 rounded-lg px-3 py-2 text-sm border border-gray-600"
+      />
+      <button
+        onClick={handleCopy}
+        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
+      >
+        {copied ? 'Copied!' : 'Copy'}
+      </button>
+    </div>
+  </div>
+)}
         {/* Per Tool Recommendations */}
         <h2 className="text-white font-semibold text-xl mb-4">Per Tool Breakdown</h2>
         <div className="space-y-4 mb-8">
@@ -107,7 +176,7 @@ export default function ResultsPage() {
         {isHighSavings && (
           <div className="bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-2xl p-6 mb-8 text-center">
             <h3 className="text-yellow-400 font-bold text-xl mb-2">
-              💰 You could save ${result.totalMonthlySavings.toFixed(0)}/mo
+               You could save ${result.totalMonthlySavings.toFixed(0)}/mo
             </h3>
             <p className="text-gray-300 mb-4">
               Credex sources discounted AI credits from companies that overforecast.
